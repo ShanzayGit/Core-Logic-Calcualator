@@ -67,4 +67,3 @@ sin(0.5)+log(10) = 2.30259
 Developed by **Shanzay Malik**  
   
 
-Would you like me to also prepare a **diagram of the expression evaluation flow (tokenization → stack → result)** for the README? That would make the parsing logic instantly clear to recruiters.
