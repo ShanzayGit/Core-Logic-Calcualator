@@ -1,6 +1,6 @@
 ## 📄 README.md
 
-##Overview
+## Overview
 # Core-Logic-Calculator
 
 This project implements the **core logic of a calculator in C++**, supporting both **standard arithmetic operations** and **scientific functions**.  
@@ -12,8 +12,8 @@ Core-Logic-Calcualator/
 - A_CALCULATOR_PROJECT/   # Source files (headers and implementation)
    - Evalute.cpp
    - Evaluate.h
+   - main.cpp # driver file
 - A_CALCULATOR_PROJECT.sln # Visual Studio solution file
-- main.cpp
 - README.md
 - .gitignore
 - .gitattributes
