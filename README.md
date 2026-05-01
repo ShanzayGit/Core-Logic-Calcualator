@@ -29,9 +29,10 @@ Core-Logic-Calcualator/
 
 ### 🔹 On Linux/Mac (g++)
 If you want to compile manually Compile all `.cpp` files together with `main.cpp`::
+```
 g++ *.cpp -o calculator_app
 ./calculator_app
-
+```
 
 ## 🧩 Example Usage
 
