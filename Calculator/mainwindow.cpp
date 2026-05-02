@@ -38,16 +38,19 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->btnOpenBrackets, &QPushButton::clicked, this, &MainWindow::onDigitClicked);
     connect(ui->btnCloseBrackets, &QPushButton::clicked, this, &MainWindow::onDigitClicked);
     connect(ui->btnPower, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnExp, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnLog10, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnLn, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnAtan, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnAsin, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnAcos, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
-    connect(ui->btnTan, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    // All scientific functions use onOperatorClicked
     connect(ui->btnSin, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
     connect(ui->btnCos, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnTan, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+
+    connect(ui->btnAsin, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnAcos, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnAtan, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+
     connect(ui->btnSqrt, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnLn, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnLog10, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
+    connect(ui->btnExp, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
     connect(ui->btnAbs, &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
 
 
@@ -72,25 +75,48 @@ MainWindow::~MainWindow()
  }
 
 
-void MainWindow::onDigitClicked() {
-    QPushButton* button = qobject_cast<QPushButton*>(sender());
-    if (button) {
-        qDebug() << "Clicked:" << button->objectName() << button->text();
-        std::string input = button->text().toStdString();
-        addInput(input);
-        ui->display->setText(QString::fromStdString(expression));
-    }
-}
+ void MainWindow::onDigitClicked() {
+     QPushButton* button = qobject_cast<QPushButton*>(sender());
+     if (button) {
+         qDebug() << "Clicked:" << button->objectName() << button->text();
+         std::string input = button->text().toStdString();
+
+         // If the display only has "0", clear it before appending
+         if (expression == "0") {
+             expression.clear();
+         }
+
+         // Append the digit to the current expression
+         expression += input;
+
+         // Update the display
+         ui->display->setText(QString::fromStdString(expression));
+     }
+ }
 
 
+ void MainWindow::onOperatorClicked() {
+     QPushButton* button = qobject_cast<QPushButton*>(sender());
+     if (button) {
+         std::string op = button->text().toStdString();
 
-void MainWindow::onOperatorClicked() {
-    QPushButton* button = qobject_cast<QPushButton*>(sender());
-    if (button) {
-        addInput(button->text().toStdString());
-        ui->display->setText(QString::fromStdString(expression));
-    }
-}
+         // For functions, automatically append "("
+         if (op == "sin" || op == "cos" || op == "tan" ||
+             op == "asin" || op == "acos" || op == "atan" ||
+             op == "sqrt" || op == "ln" || op == "log" ||
+             op == "exp" || op == "abs")
+         {
+             addInput(op + "(");
+         }
+         else {
+             // Normal operators (+, -, *, /, ^, etc.)
+             addInput(op);
+         }
+
+         ui->display->setText(QString::fromStdString(expression));
+     }
+ }
+
 
 void MainWindow::onEqualClicked() {
     double result = evaluate(expression);

@@ -438,7 +438,7 @@ background-color:#f27c96;
           <x>0</x>
           <y>0</y>
           <width>261</width>
-          <height>121</height>
+          <height>124</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="SciLayout">
@@ -590,7 +590,7 @@ background-color:#f27c96;
 }</string>
            </property>
            <property name="text">
-            <string>log10</string>
+            <string>log</string>
            </property>
           </widget>
          </item>

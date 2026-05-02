@@ -34,15 +34,19 @@ void displayExpression()
     cout << "Current Expression: " << (expression.empty() ? "0" : expression) << endl;
 }
 
-// Operator precedence
-bool precedence(const string& topOfStack, const string& current) {
+bool precedence(const string& topOfStack, const string& current) 
+{
     if (topOfStack == "sin" || topOfStack == "cos" || topOfStack == "tan" ||
-        topOfStack == "log" || topOfStack == "ln" || topOfStack == "sqrt")
+        topOfStack == "asin" || topOfStack == "acos" || topOfStack == "atan" || topOfStack == "ln" || topOfStack == "sqrt" ||
+        topOfStack == "log" || topOfStack == "abs" || topOfStack == "exp")
         return true;
 
     if (current == "sin" || current == "cos" || current == "tan" ||
-        current == "log" || current == "ln" || current == "sqrt")
+        current == "asin" || current == "acos" || current == "atan" || current == "ln" || current == "sqrt" ||
+        current == "log" || current == "abs" || current == "exp")
         return false;
+
+
 
     if (topOfStack == "(" && current == ")") return false;
     if (current == ")" && topOfStack != "(") return true;
@@ -78,7 +82,7 @@ double solveFunc(string f, double op) {
     else if (f == "asin") return asin(op) * 180.0 / M_PI;
     else if (f == "acos") return acos(op) * 180.0 / M_PI;
     else if (f == "atan") return atan(op) * 180.0 / M_PI;
-    else if (f == "log10") return log10(op);
+    else if (f == "log") return log10(op);
     else if (f == "abs") return abs(op);
     else if (f == "exp") return exp(op);
     else if (f == "ln") return log(op);
@@ -144,7 +148,7 @@ double evaluate(const string& infix)
                 while (!operators.empty() && precedence(operators.top(), op)) {
                     string topOp = operators.top(); operators.pop();
                     if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
+                        topOp == "atan" || topOp == "log" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
                         double val = operand.top(); operand.pop();
                         operand.push(solveFunc(topOp, val));
                     }
@@ -164,7 +168,7 @@ double evaluate(const string& infix)
                 while (!operators.empty() && operators.top() != "(") {
                     string topOp = operators.top(); operators.pop();
                     if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
+                        topOp == "atan" || topOp == "log" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
                         double val = operand.top(); operand.pop();
                         operand.push(solveFunc(topOp, val));
                     }
@@ -178,7 +182,7 @@ double evaluate(const string& infix)
                 if (!operators.empty()) {
                     string topOp = operators.top();
                     if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
+                        topOp == "atan" || topOp == "log" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
                         operators.pop();
                         double val = operand.top(); operand.pop();
                         operand.push(solveFunc(topOp, val));
@@ -194,7 +198,7 @@ double evaluate(const string& infix)
         while (!operators.empty()) {
             string topOp = operators.top(); operators.pop();
             if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
+                topOp == "atan" || topOp == "log" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
                 double val = operand.top(); operand.pop();
                 operand.push(solveFunc(topOp, val));
             }
