@@ -54,11 +54,13 @@ bool precedence(const string& topOfStack, const string& current) {
     else if (topOfStack == "*" || topOfStack == "/" || topOfStack == "mod") topPrec = 10;
     else if (topOfStack == "+" || topOfStack == "-") topPrec = 9;
     else if (topOfStack == "=") topPrec = 3;
+    else if (topOfStack == "%")topPrec = 12;
 
     if (current == "^") currPrec = 11;
     else if (current == "*" || current == "/" || current == "mod") currPrec = 10;
     else if (current == "+" || current == "-") currPrec = 9;
     else if (current == "=") currPrec = 3;
+    else if (topOfStack == "%")topPrec = 12;
 
     if (topPrec > currPrec) return true;
     else if (topPrec == currPrec) return (current == "^") ? false : true;
@@ -66,7 +68,7 @@ bool precedence(const string& topOfStack, const string& current) {
 }
 
 bool isAlpha(const char a) { return ((a >= 'a' && a <= 'z') || (a >= 'A' && a <= 'Z')); }
-bool isOperator(const char c) { return (c == '-' || c == '+' || c == '*' || c == '/' || c == '^'); }
+bool isOperator(const char c) { return (c == '-' || c == '+' || c == '*' || c == '/' || c == '^'||c=='%'); }
 
 // Solve functions
 double solveFunc(string f, double op) {
@@ -87,107 +89,128 @@ double solve(string c, double op1, double op2) {
     if (c == "+") return op1 + op2;
     else if (c == "-") return op1 - op2;
     else if (c == "*") return op1 * op2;
-    else if (c == "/") return op2 == 0 ? 0 : op1 / op2;
+    else if (c == "/")
+    {
+        if (op2 == 0) 
+        {
+            throw std::runtime_error("Division by zero error");
+        }
+        return op1 / op2;
+    }
     else if (c == "^") return pow(op1, op2);
+    else if (c == "%")
+    {
+        return ((op1 /100.0) *op2);
+    }
     else return fmod(op1, op2);
 }
 
 // Evaluate expression
 double evaluate(const string& infix)
 {
-    string x = infix;
-    stack<double> operand;
-    stack<string> operators;
-    int i = 0;
+    try
+    {
+        string x = infix;
+        stack<double> operand;
+        stack<string> operators;
+        int i = 0;
 
-    while (i < x.length()) {
-        if (isspace(x[i])) { i++; continue; }
+        while (i < x.length()) {
+            if (isspace(x[i])) { i++; continue; }
 
-        if (isdigit(x[i]) || x[i] == '.') {
-            string num;
-            while (i < x.length() && (isdigit(x[i]) || x[i] == '.'))
-                num += x[i++];
-            operand.push(stod(num));
-            continue;
-        }
-
-        if (isAlpha(x[i])) {
-            string func;
-            while (i < x.length() && isAlpha(x[i]))
-                func += x[i++];
-            operators.push(func);
-            continue;
-        }
-
-        if (isOperator(x[i]) || (x[i] == 'm' && x.substr(i, 3) == "mod")) {
-            string op;
-            if (x[i] == 'm' && x.substr(i, 3) == "mod") { op = "mod"; i += 3; }
-            else { op = string(1, x[i]); i++; }
-
-            if (op == "-" && (i == 1 || x[i - 2] == '(' || isOperator(x[i - 2]))) operand.push(0);
-
-            while (!operators.empty() && precedence(operators.top(), op)) {
-                string topOp = operators.top(); operators.pop();
-                if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                    topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
-                    double val = operand.top(); operand.pop();
-                    operand.push(solveFunc(topOp, val));
-                }
-                else {
-                    double b = operand.top(); operand.pop();
-                    double a = operand.top(); operand.pop();
-                    operand.push(solve(topOp, a, b));
-                }
+            if (isdigit(x[i]) || x[i] == '.') {
+                string num;
+                while (i < x.length() && (isdigit(x[i]) || x[i] == '.'))
+                    num += x[i++];
+                operand.push(stod(num));
+                continue;
             }
-            operators.push(op);
-            continue;
-        }
 
-        if (x[i] == '(') { operators.push("("); i++; continue; }
+            if (isAlpha(x[i])) {
+                string func;
+                while (i < x.length() && isAlpha(x[i]))
+                    func += x[i++];
+                operators.push(func);
+                continue;
+            }
 
-        if (x[i] == ')') {
-            while (!operators.empty() && operators.top() != "(") {
-                string topOp = operators.top(); operators.pop();
-                if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                    topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
-                    double val = operand.top(); operand.pop();
-                    operand.push(solveFunc(topOp, val));
+            if (isOperator(x[i]) || (x[i] == 'm' && x.substr(i, 3) == "mod")) {
+                string op;
+                if (x[i] == 'm' && x.substr(i, 3) == "mod") { op = "mod"; i += 3; }
+                else { op = string(1, x[i]); i++; }
+
+                if (op == "-" && (i == 1 || x[i - 2] == '(' || isOperator(x[i - 2]))) operand.push(0);
+
+                while (!operators.empty() && precedence(operators.top(), op)) {
+                    string topOp = operators.top(); operators.pop();
+                    if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
+                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
+                        double val = operand.top(); operand.pop();
+                        operand.push(solveFunc(topOp, val));
+                    }
+                    else {
+                        double b = operand.top(); operand.pop();
+                        double a = operand.top(); operand.pop();
+                        operand.push(solve(topOp, a, b));
+                    }
                 }
-                else {
-                    double b = operand.top(); operand.pop();
-                    double a = operand.top(); operand.pop();
-                    operand.push(solve(topOp, a, b));
-                }
+                operators.push(op);
+                continue;
             }
-            if (!operators.empty()) operators.pop();
-            if (!operators.empty()) {
-                string topOp = operators.top();
-                if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-                    topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
-                    operators.pop();
-                    double val = operand.top(); operand.pop();
-                    operand.push(solveFunc(topOp, val));
+
+            if (x[i] == '(') { operators.push("("); i++; continue; }
+
+            if (x[i] == ')') {
+                while (!operators.empty() && operators.top() != "(") {
+                    string topOp = operators.top(); operators.pop();
+                    if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
+                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
+                        double val = operand.top(); operand.pop();
+                        operand.push(solveFunc(topOp, val));
+                    }
+                    else {
+                        double b = operand.top(); operand.pop();
+                        double a = operand.top(); operand.pop();
+                        operand.push(solve(topOp, a, b));
+                    }
                 }
+                if (!operators.empty()) operators.pop();
+                if (!operators.empty()) {
+                    string topOp = operators.top();
+                    if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
+                        topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "abs" || topOp == "exp" || topOp == "sqrt") {
+                        operators.pop();
+                        double val = operand.top(); operand.pop();
+                        operand.push(solveFunc(topOp, val));
+                    }
+                }
+                i++;
+                continue;
             }
+
             i++;
-            continue;
         }
 
-        i++;
+        while (!operators.empty()) {
+            string topOp = operators.top(); operators.pop();
+            if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
+                topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
+                double val = operand.top(); operand.pop();
+                operand.push(solveFunc(topOp, val));
+            }
+            else {
+                double b = operand.top(); operand.pop();
+                double a = operand.top(); operand.pop();
+                operand.push(solve(topOp, a, b));
+            }
+        }
+        return operand.empty() ? 0 : operand.top();
     }
-
-    while (!operators.empty()) {
-        string topOp = operators.top(); operators.pop();
-        if (topOp == "sin" || topOp == "cos" || topOp == "tan" || topOp == "asin" || topOp == "acos" ||
-            topOp == "atan" || topOp == "log10" || topOp == "ln" || topOp == "sqrt" || topOp == "abs" || topOp == "exp") {
-            double val = operand.top(); operand.pop();
-            operand.push(solveFunc(topOp, val));
-        }
-        else {
-            double b = operand.top(); operand.pop();
-            double a = operand.top(); operand.pop();
-            operand.push(solve(topOp, a, b));
-        }
-        // return operand.empty() ? 0 : operand.top();
+    catch (const std::runtime_error& e) 
+    {
+        // Handle division by zero or other runtime errors
+        std::cerr << "Error: " << e.what() << std::endl;
+        return std::numeric_limits<double>::quiet_NaN();
+        // or return a sentinel value
     }
 }
