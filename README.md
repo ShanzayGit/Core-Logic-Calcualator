@@ -17,7 +17,7 @@ Core-Logic-Calcualator/
 │   ├── mainwindow.ui            # UI layout (Qt Designer)
 │   ├── mainwindow.h             # UI header
 │   ├── mainwindow.cpp           # UI controller logic
-│   ├── main.cpp     # Qt project file
+│   ├── main.cpp     
 │
 ├── A_CALCULATOR_PROJECT.sln     # Visual Studio solution
 ├── README.md
