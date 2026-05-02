@@ -1,69 +1,86 @@
-## 📄 README.md
+# 🧮 Core-Logic-Calculator
 
-## Overview
-# Core-Logic-Calculator
-
-This project implements the **core logic of a calculator in C++**, supporting both **standard arithmetic operations** and **scientific functions**.  
-It demonstrates **algorithm design, expression parsing, and use of STL containers (stack, vector, string)** along with `<cmath>` for scientific calculations.
+This project implements a **standard and scientific calculator in C++** with a **Qt-based graphical user interface (GUI)**. It combines a robust **expression evaluator** (using STL containers and `<cmath>`) with an interactive **UI built in Qt Creator and integrated into Visual Studio**.
 
 
 ## 📂 Folder Structure
+
+```
 Core-Logic-Calcualator/
-- A_CALCULATOR_PROJECT/   # Source files (headers and implementation)
-   - Evalute.cpp
-   - Evaluate.h
-   - main.cpp # driver file
-- A_CALCULATOR_PROJECT.sln # Visual Studio solution file
-- README.md
-- .gitignore
-- .gitattributes
+│
+├── A_CALCULATOR_PROJECT/        # Core logic (headers + implementation)
+│   ├── Evaluate.cpp
+│   ├── Evaluate.h
+│   └── main.cpp                 # Console driver
+│
+├── Calculator/                  # Qt UI project
+│   ├── mainwindow.ui            # UI layout (Qt Designer)
+│   ├── mainwindow.h             # UI header
+│   ├── mainwindow.cpp           # UI controller logic
+│   ├── main.cpp     # Qt project file
+│
+├── A_CALCULATOR_PROJECT.sln     # Visual Studio solution
+├── README.md
+├── .gitignore
+└── .gitattributes
+```
+
 
 ## ⚙️ Build & Run Instructions
 
-### 🔹 On Windows (Visual Studio)
-1. Open `A_CALCULATOR_PROJECT.sln` in Visual Studio.
-2. Add headers
-3. Create main.cpp
-4. Build the solution (`Ctrl+Shift+B`).
-5. Run with **Ctrl+F5**.
+### 🔹 Console Version
+1. Open `A_CALCULATOR_PROJECT.sln` in **Visual Studio**.
+2. Build (`Ctrl+Shift+B`) and run (`Ctrl+F5`).
+3. Input expressions directly in the console.
 
-### 🔹 On Linux/Mac (g++)
-If you want to compile manually Compile all `.cpp` files together with `main.cpp`::
+### 🔹 Qt GUI Version
+1. Install Qt with the same compiler toolchain as Visual Studio.
+2. Add the Qt VS Tools extension in Visual Studio.
+3. Configure Qt version path in Qt VS Tools → Options.
+4. Open the solution and build the project.
+5. Run the calculator with the interactive UI.
+
+
+## 🚀 Features
+
+- **Standard arithmetic**: `+`, `-`, `*`, `/`, `^`,`%`,`mod`
+- **Scientific functions**: `sin`, `cos`, `tan`, `sqrt`, `log`, `ln`, `exp`,`acaos`,`atan`,`asin`,`exp`,`abs`
+- **UI Enhancements**:
+  - Toggle between **Standard** and **Scientific** panels
+  - **Decimal point** support
+  - **Percentage operator** distinct from modulus
+  - **Error handling** (e.g., division by zero → “Error” message)
+  - Buttons can span multiple rows/columns in grid layout
+
+
+## 🖥️ Example Usage
+
+### Console
+```cpp
+string expr1 = "3+5*2";
+cout << expr1 << " = " << evaluate(expr1) << endl;
+
+string expr2 = "50% * 20";
+cout << expr2 << " = " << evaluate(expr2) << endl;
 ```
-g++ *.cpp -o calculator_app
-./calculator_app
+
+**Output:**
 ```
-
-## 🧩 Example Usage
-
- string expr1 = "3+5*2";
- cout << expr1 << " = " << evaluate(expr1) << endl;
-
- string expr2 = "sin(0.5)+log(10)";
- cout << expr2 << " = " << evaluate(expr2) << endl;
-
-**Expected Output:**
-
 3+5*2 = 13
-sin(0.5)+log(10) = 2.30259
+50% * 20 = 10
+```
 
-
-## 🚀 Features Implemented
-- Standard arithmetic operations: `+`, `-`, `*`, `/`, `^`
-- Scientific functions: `sin`, `cos`, `tan`, `sqrt`, `log`, `ln`, `exp`
-- Expression parsing using **stack** and **vector**
-- Error handling for invalid expressions
-- Modular design for easy extension
+### GUI
+- Enter `2+3*log(10)` in the display → Result:`5`
+- For now `%` is used as binary operator like 50%20 (50 percent of 20).
 
 
 ## 📌 Future Improvements
-- Add support for parentheses nesting and precedence validation.
-- Implement memory functions (M+, M-, MR).
-- Provide a GUI frontend (WinUI 3, Qt, or HTML/CSS/JS).
-- Add unit tests for robustness.
+- Add **memory functions** (M+, M-, MR).
+- Implement **unit tests** for evaluator and UI.
+- Extend UI with **history panel** and **themes**.
+- Package as a **cross-platform installer**.
 
 
-## 👤 Author
-Developed by **Shanzay Malik**  
-  
-
+## 👩‍💻 Author
+Developed by **Shanzay Malik**
